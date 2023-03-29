@@ -1,0 +1,61 @@
+---
+_package: "my package"
+description:
+  de: "Dieses Paket ist ein Superfunktionspaket, das von coolen Extremum-Entwicklern\
+    \ erstellt wurde"
+  hy: "Այս փաթեթը սուպեր ֆունկցիոնալ փաթեթ է, որը ստեղծվել է սառը ծայրահեղ մշակողն\
+    երի կողմից"
+  ru: "Мой пакет функций"
+  en: "This package is a super functions package created by cool extremum developers"
+  it: "Questo pacchetto è un pacchetto super funzioni creato da cool extremum sviluppatori"
+  zh: "这个包是由酷极值开发者创建的超级函数包"
+functions:
+- name: "abfunc"
+  context: "Context-abfunc"
+  description:
+    de: "Addiert zwei Zahlen"
+    hy: "Ավելացնում է երկու թիվ"
+    ru: "Складывает два числа"
+    en: "Adds two numbers"
+    it: "Aggiunge due numeri"
+    zh: "添加两个数字"
+  returnType: "number"
+  parameters:
+    param1: "number"
+    param2: "number"
+- name: "arrayfunc"
+  context: "Context-arrayfunc"
+  description:
+    de: "Array von Daten erstellen"
+    hy: "Ստեղծեք տվյալների զանգված"
+    ru: "Создаёт массив данных"
+    en: "Create array of data"
+    it: "Crea array di dati"
+    zh: "创建数据数组"
+  returnType: "array"
+  parameters:
+    string: "string"
+- name: "collectionFunc"
+  context: "Context-collectionfunc"
+  description:
+    de: "Erstellt Sammlung von Daten"
+    hy: "Ստեղծում է տվյալների հավաքածու"
+    ru: "Создаёт коллекцию данных"
+    en: "Creates collection of data"
+    it: "Crea raccolta di dati"
+    zh: "创建数据收集"
+  returnType: "array"
+  parameters:
+    input: "string"
+- name: "hashfunc"
+  context: "Context-hashfunc"
+  description:
+    de: "Erstellt Hash des übergebenen Objekts"
+    hy: "Ստեղծում է փոխանցված օբյեկտի հաշ"
+    ru: "Хэширует переданный объект"
+    en: "Creates hash of passed object"
+    it: "Crea hash dell'oggetto passato"
+    zh: "创建传递对象的哈希"
+  returnType: "string"
+  parameters:
+    p1: "string"

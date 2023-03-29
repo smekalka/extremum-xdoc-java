@@ -1,0 +1,91 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.7.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'maven-publish'
+
+}
+
+group = 'io.extremum.functions'
+version = '3.0.0'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri("https://artifactory.extremum.monster/artifactory/extremum-snapshots/")
+        credentials {
+            username = System.getenv("ARTIFACTORY_USER")
+            password = System.getenv("ARTIFACTORY_PASSWORD")
+        }
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+
+    maven {
+        url = uri("https://artifactory.extremum.monster/artifactory/extremum-releases/")
+        credentials {
+            username = System.getenv("ARTIFACTORY_USER")
+            password = System.getenv("ARTIFACTORY_PASSWORD")
+        }
+    }
+}
+
+dependencies {
+    ext.extremumVersion = "2.1.17-SNAPSHOT"
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework:spring-webmvc'
+    implementation("io.extremum:extremum-shared-models:$extremumVersion")
+    implementation("io.extremum:extremum-jackson-mapper:$extremumVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
+    implementation("org.reflections:reflections:0.10.2")
+    implementation("com.squareup.okhttp:okhttp:2.7.5")
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.1")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = "xdoc-java"
+            version = this.version
+            from components.java
+        }
+    }
+    repositories {
+        var releasesRepoUrl = "https://artifactory.extremum.monster/artifactory/extremum-releases/"
+        var snapshotsRepoUrl = "https://artifactory.extremum.monster/artifactory/extremum-snapshots/"
+
+        maven {
+            url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = System.getenv("ARTIFACTORY_USER")
+                password = System.getenv("ARTIFACTORY_PASSWORD")
+            }
+        }
+    }
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    archiveClassifier.set("")
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+

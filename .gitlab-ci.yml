@@ -1,0 +1,31 @@
+image: openjdk:8
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - name: docker:dind
+
+stages:
+  - test
+  - publish
+
+cache:
+  key:
+    files:
+      - gradle/wrapper/gradle-wrapper.properties
+  paths:
+    - cache/caches/
+    - cache/notifications/
+    - cache/wrapper/
+
+test:
+  stage: test
+  script:
+    - ./gradlew --build-cache --gradle-user-home cache/ check
+
+publish:
+  stage: publish
+  script:
+    - ./gradlew --gradle-user-home cache/ publish -x test

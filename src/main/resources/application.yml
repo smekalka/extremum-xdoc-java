@@ -1,0 +1,8 @@
+extremum:
+  doc:
+    file: doc.yml
+    translator:
+      preferred-lang-to-translate-from: en
+      yandex:
+        folderId:
+        apiKey:
