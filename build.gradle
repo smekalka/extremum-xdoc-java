@@ -3,38 +3,20 @@ plugins {
     id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'maven-publish'
-
+    id 'signing'
 }
 
-group = 'io.extremum.functions'
+group = 'io.extremum'
 version = '3.0.0'
 sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {
-        url = uri("https://artifactory.extremum.monster/artifactory/extremum-snapshots/")
-        credentials {
-            username = System.getenv("ARTIFACTORY_USER")
-            password = System.getenv("ARTIFACTORY_PASSWORD")
-        }
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-
-    maven {
-        url = uri("https://artifactory.extremum.monster/artifactory/extremum-releases/")
-        credentials {
-            username = System.getenv("ARTIFACTORY_USER")
-            password = System.getenv("ARTIFACTORY_PASSWORD")
-        }
-    }
 }
 
 dependencies {
-    ext.extremumVersion = "2.1.17-SNAPSHOT"
+    ext.extremumVersion = "3.0.0"
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework:spring-webmvc'
     implementation("io.extremum:extremum-shared-models:$extremumVersion")
@@ -53,26 +35,73 @@ dependencies {
     testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
             groupId = group
             artifactId = "xdoc-java"
             version = this.version
-            from components.java
-        }
-    }
-    repositories {
-        var releasesRepoUrl = "https://artifactory.extremum.monster/artifactory/extremum-releases/"
-        var snapshotsRepoUrl = "https://artifactory.extremum.monster/artifactory/extremum-snapshots/"
 
-        maven {
-            url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username = System.getenv("ARTIFACTORY_USER")
-                password = System.getenv("ARTIFACTORY_PASSWORD")
+            from(components["java"])
+
+            pom {
+                name.set("xdoc-java")
+                description.set("Xdoc for java functions")
+                url.set("https://github.com/smekalka/extremum-xdoc-java")
+                inceptionYear.set("2022")
+
+                scm {
+                    url.set("https://github.com/smekalka/extremum-xdoc-java")
+                    connection.set("scm:https://github.com/smekalka/extremum-xdoc-java.git")
+                    developerConnection.set("scm:git://github.com/smekalka/extremum-xdoc-java.git")
+                }
+
+                licenses {
+                    license {
+                        name.set("Business Source License 1.1")
+                        url.set("https://github.com/smekalka/extremum-xdoc-java/blob/develop/LICENSE.md")
+                        distribution.set("repo")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("urgimchak")
+                        name.set("Maksim Tyutyaev")
+                        email.set("maksim.tyutyaev@smekalka.com")
+                    }
+                }
             }
         }
+    }
+
+    repositories {
+        maven {
+            var releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            var snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            name = "OSSRH"
+            var isReleaseVersion = !(version as String).endsWith("-SNAPSHOT")
+            url = uri(isReleaseVersion ? releasesRepoUrl : snapshotsRepoUrl)
+            credentials {
+                username = System.getProperty("ossrhUsername")
+                password = System.getProperty("ossrhPassword")
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.maven
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
 
